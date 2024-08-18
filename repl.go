@@ -3,17 +3,18 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"github.com/konfucius1/pokedexcli/internal/pokeapi"
 	"os"
 	"strings"
 )
 
-type cliCommand struct {
-	name        string
-	description string
-	callback    func() error
+type config struct {
+	pokeapiClient        pokeapi.Client
+	nextLocationsUrl     *string
+	previousLocationsUrl *string
 }
 
-func startRepl() {
+func startRepl(cfg *config) {
 	reader := bufio.NewScanner(os.Stdin)
 	for {
 		fmt.Print("Pokedex > ")
@@ -29,7 +30,7 @@ func startRepl() {
 		command, exists := getCommands()[commandName]
 
 		if exists {
-			err := command.callback()
+			err := command.callback(cfg)
 			if err != nil {
 				fmt.Println(err)
 			}
@@ -45,6 +46,12 @@ func cleanInput(text string) []string {
 	output := strings.ToLower(text)
 	words := strings.Fields(output)
 	return words
+}
+
+type cliCommand struct {
+	name        string
+	description string
+	callback    func(*config) error
 }
 
 func getCommands() map[string]cliCommand {

@@ -13,12 +13,7 @@ func ListLocations() (LocationAreaResponse, error) {
 		return LocationAreaResponse{}, err
 	}
 
-	defer func(Body io.ReadCloser) {
-		err := Body.Close()
-		if err != nil {
-
-		}
-	}(res.Body)
+	defer res.Body.Close()
 
 	data, err := io.ReadAll(res.Body)
 

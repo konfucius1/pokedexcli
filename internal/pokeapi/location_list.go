@@ -2,25 +2,29 @@ package pokeapi
 
 import (
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/http"
 )
 
-func ListLocations() (LocationAreaResponse, error) {
-	res, err := http.Get("https://pokeapi.co/api/v2/location-area")
+func (c *Client) ListLocations(pageUrl *string) (LocationAreaResponse, error) {
+	url := baseURL + "/location-area"
+
+	if pageUrl != nil {
+		url = *pageUrl
+	}
+
+	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return LocationAreaResponse{}, err
 	}
 
-	defer res.Body.Close()
-
-	data, err := io.ReadAll(res.Body)
-
-	if res.StatusCode != http.StatusOK {
-		return LocationAreaResponse{}, fmt.Errorf("unexpected status code: %d", res.StatusCode)
+	resp, err := c.httpClient.Do(req)
+	if err != nil {
+		return LocationAreaResponse{}, err
 	}
+	defer resp.Body.Close()
 
+	data, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return LocationAreaResponse{}, err
 	}

@@ -13,7 +13,7 @@ func (c *Client) ListLocations(pageUrl *string) (LocationAreaResponse, error) {
 		url = *pageUrl
 	}
 
-	req, err := http.NewRequest("GET", url, nil)
+	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		return LocationAreaResponse{}, err
 	}

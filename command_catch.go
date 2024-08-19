@@ -18,6 +18,11 @@ func commandCatch(cfg *config, args ...string) error {
 		return err
 	}
 
+	if _, ok := cfg.caughtPokemon[pokemon.Name]; ok {
+		fmt.Printf("%s already caught!\n", pokemon.Name)
+		return nil
+	}
+
 	res := rand.Intn(pokemon.BaseExperience)
 
 	fmt.Printf("Throwing a Pokeball at %s...\n", pokemon.Name)
